@@ -1,11 +1,11 @@
-jest.mock("../../component/user/user.service");
+jest.mock("../../module/user/user.service");
 jest.mock("../../utils/email");
 // jest.mock("../../utils/otp");
 
-import userService from "../../component/user/user.service";
+import userService from "../../module/user/user.service";
 import emailService from "../../utils/email";
 // import { sendOTPToUser } from "../../utils/otp";
-import authController from "../../component/auth/auth.controller";
+import authController from "../../module/auth/auth.controller";
 import { Request, Response } from "express";
 // import prismaMock from "./__mocks__/prisma";
 

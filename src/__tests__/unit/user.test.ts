@@ -1,8 +1,8 @@
-jest.mock("../../component/user/user.service");
-jest.mock("../../component/user/user.repository");
+jest.mock("../../module/user/user.service");
+jest.mock("../../module/user/user.repository");
 
-import userService from "../../component/user/user.service";
-import { UserDocument } from "../../component/user/user.response";
+import userService from "../../module/user/user.service";
+import { UserDocument } from "../../module/user/user.response";
 describe("User Service Tests", () => {
   let userId: string;
   let user: Partial<UserDocument>;

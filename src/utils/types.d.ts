@@ -1,4 +1,4 @@
-import { UserDocument } from "../component/user/User"; // Adjust the path to your UserDocument type
+import { UserDocument } from "../module/user/User"; // Adjust the path to your UserDocument type
 
 declare global {
   namespace Express {

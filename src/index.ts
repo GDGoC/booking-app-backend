@@ -6,13 +6,8 @@ import dotenv from "dotenv";
 import path from "path";
 import rateLimit from "express-rate-limit";
 import { connectDB } from "./utils/db";
-const swaggerui = require("swagger-ui-express");
-const YAML = require("yamljs");
-const swaggerDocument = YAML.load(
-  path.resolve(__dirname, ".././src/swagger.yaml")
-);
-import authRoutes from "./component/auth/auth.routes";
-import userRoutes from "./component/user/user.routes";
+import authRoutes from "./module/auth/auth.routes";
+import userRoutes from "./module/user/user.routes";
 
 // Load environment variables
 dotenv.config();
@@ -50,7 +45,6 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/docs", swaggerui.serve, swaggerui.setup(swaggerDocument));
 
 // Start server and connect to the database
 app.listen(port, () => {
