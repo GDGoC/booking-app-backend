@@ -38,7 +38,7 @@ export type UserDocument = mongoose.Document & {
   username: string;
   email: string;
   password: string;
-  _id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId | String;
 };
 export type UserServiceResponse = {
   status: string;

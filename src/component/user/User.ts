@@ -5,6 +5,7 @@ interface IUser extends Document {
   username: string;
   password: string;
   email: string;
+  profile: string;
 }
 
 // Create the User schema
@@ -12,6 +13,7 @@ const UserSchema: Schema<IUser> = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true },
+  profile: { type: String, required: false },
 });
 
 // Export the User model

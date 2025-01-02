@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
-import { comparePassword, encrypt } from "../utils/encryption";
+import { comparePassword, encrypt } from "../../utils/encryption";
 import {
   passwordMismatchError,
   doesNotExistError,
   defaultError,
   noDuplicateError,
-} from "../error/error";
+} from "../../error/error";
 import httpStatus from "http-status";
-import userRepository from "../repositories/user.repository";
+import userRepository from "./user.repository";
 import {
   LoginResponse,
   CreateUserResponse,
@@ -15,7 +15,8 @@ import {
   GetUserResponse,
   User,
   UserDocument,
-} from "../types/ResponseTypes";
+} from "./user.response";
+import cloudinary from "../../utils/cloudinary";
 
 class UserService {
   async loginUser(
@@ -199,6 +200,67 @@ class UserService {
     } catch (error) {
       console.error(error);
       return defaultError;
+    }
+  }
+  async uploadProfile(
+    userId: string,
+    file: Express.Multer.File
+  ): Promise<{
+    status: string;
+    error: boolean;
+    statusCode: number;
+    message: string;
+    data?: { url: string };
+  }> {
+    try {
+      if (!file) {
+        return {
+          status: "error",
+          error: true,
+          statusCode: httpStatus.BAD_REQUEST,
+          message: "No file uploaded",
+        };
+      }
+
+      // Upload file to Cloudinary
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "profiles",
+        width: 150,
+        height: 150,
+        crop: "fill",
+      });
+
+      // Store the URL in the database and associate it with the user
+      const updatedUser = await userRepository.update(userId, {
+        profile: result.secure_url, // Save the Cloudinary URL to the 'profile' field
+      });
+
+      if (!updatedUser) {
+        return {
+          status: "error",
+          error: true,
+          statusCode: httpStatus.BAD_REQUEST,
+          message: "Failed to update user profile",
+        };
+      }
+
+      return {
+        status: "success",
+        error: false,
+        statusCode: httpStatus.OK,
+        message: "Profile image uploaded and saved successfully",
+        data: {
+          url: result.secure_url,
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: "error",
+        error: true,
+        statusCode: httpStatus.INTERNAL_SERVER_ERROR,
+        message: "Error uploading profile image",
+      };
     }
   }
 }

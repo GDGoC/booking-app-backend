@@ -3,10 +3,16 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import dotenv from "dotenv";
+import path from "path";
 import rateLimit from "express-rate-limit";
-import userRoutes from "./routes/user.routes";
-import authRoutes from "./routes/auth.routes";
 import { connectDB } from "./utils/db";
+const swaggerui = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load(
+  path.resolve(__dirname, ".././src/swagger.yaml")
+);
+import authRoutes from "./component/auth/auth.routes";
+import userRoutes from "./component/user/user.routes";
 
 // Load environment variables
 dotenv.config();
@@ -42,11 +48,12 @@ app.get("/", async (req: Request, res: Response) => {
   res.json({ success: true, message: "Backend Connected Successfully" });
 });
 
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/docs", swaggerui.serve, swaggerui.setup(swaggerDocument));
 
 // Start server and connect to the database
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
-  connectDB();
+  // connectDB();
 });
